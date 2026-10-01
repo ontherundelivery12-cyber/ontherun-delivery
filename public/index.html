@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>On The Run Delivery</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 30px; max-width: 450px; margin: auto; }
+        .card { border: 1px solid #ddd; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, select, button { width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { background-color: #0070f3; color: white; border: none; font-weight: bold; cursor: pointer; margin-top: 15px; }
+        #result { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>On The Run Delivery</h2>
+        <label>Service Type</label>
+        <select id="serviceType">
+            <option value="delivery">Package Delivery</option>
+            <option value="driver">Commute Driver</option>
+        </select>
+        <label>Distance (km)</label>
+        <input type="number" id="distance" value="10">
+        <label>Estimated Time (mins)</label>
+        <input type="number" id="duration" value="15">
+        <button onclick="calculate()">Calculate Price</button>
+        <div id="result"></div>
+    </div>
+    <script>
+        async function calculate() {
+            const serviceType = document.getElementById('serviceType').value;
+            const distanceInKm = parseFloat(document.getElementById('distance').value);
+            const durationInMins = parseFloat(document.getElementById('duration').value);
+
+            const res = await fetch('/api/calculate-fare', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ distanceInKm, durationInMins, serviceType })
+            });
+            const data = await res.json();
+            document.getElementById('result').innerText = `Estimated Fare: $${data.estimatedFare} CAD`;
+        }
+    </script>
+</body>
+</html>
